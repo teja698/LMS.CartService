@@ -27,24 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.output.TeeOutputStream;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-
-
-
-
 public class LoggingFilter implements Filter {
 	  
 
@@ -78,36 +62,17 @@ public class LoggingFilter implements Filter {
                     .append(bufferedRequest.getRequestBody())
                     .append("] [REMOTE ADDRESS:")
                     .append(httpServletRequest.getRemoteAddr()).append("]");
-           //userActivity.setUrl(httpServletRequest.getRequestURI());
-          // userActivity.setRequest(bufferedRequest.getRequestBody());
             chain.doFilter(bufferedRequest, bufferedResponse);
             logMessage.append(" [RESPONSE:")
                     .append(bufferedResponse.getContent()).append("]");
                     logger.info(logMessage.toString());
-    //        userActivity.setResponse(bufferedResponse.getContent());
-            String response1=bufferedResponse.getContent();
-          JSONParser parser = new JSONParser();
-          JSONObject json = (JSONObject) parser.parse(response1);
-          //  String token = String.valueOf(json.get("token"));
-            // String id=String.valueOf(json.get("user_id"));
-           //userActivity.setToken(token);
-           //userActivity.setUserId(id);
-           // JSONObject jsonObject = new org.json.JSONObject(response1);
-            //String access_token = jSONObject.getString("token");
-          
-           
-           //System.out.println(user.getToken());
-         // logger.info(token);
-       //   logger.info(id);
-       
-                    
         } catch (Throwable a) {
             logger.error(a.getMessage());
         }
     }
 
     private Map<String, String> getTypesafeRequestMap(HttpServletRequest request) {
-        Map<String, String> typesafeRequestMap = new HashMap<String, String>();
+        Map<String, String> typesafeRequestMap = new HashMap<>();
         Enumeration<?> requestParamNames = request.getParameterNames();
         while (requestParamNames.hasMoreElements()) {
             String requestParamName = (String) requestParamNames.nextElement();
@@ -118,19 +83,22 @@ public class LoggingFilter implements Filter {
     }
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        // No specific actions required for destruction
     }
  
 
     @Override
     public void destroy() {
+                // No specific actions required for destruction
+
     }
 
     private static final class BufferedRequestWrapper extends
             HttpServletRequestWrapper {
 
-        private ByteArrayInputStream bais = null;
+        
         private ByteArrayOutputStream baos = null;
-        private BufferedServletInputStream bsis = null;
+        
         private byte[] buffer = null;
 
         public BufferedRequestWrapper(HttpServletRequest req)
@@ -139,7 +107,7 @@ public class LoggingFilter implements Filter {
             // Read InputStream and store its content in a buffer.
             InputStream is = req.getInputStream();
             this.baos = new ByteArrayOutputStream();
-            byte buf[] = new byte[1024];
+            byte[] buf = new byte[1024];
             int read;
             while ((read = is.read(buf)) > 0) {
                 this.baos.write(buf, 0, read);
@@ -149,9 +117,11 @@ public class LoggingFilter implements Filter {
 
         @Override
         public ServletInputStream getInputStream() {
-            this.bais = new ByteArrayInputStream(this.buffer);
-            this.bsis = new BufferedServletInputStream(this.bais);
-            return this.bsis;
+            BufferedServletInputStream bsis = null;
+            ByteArrayInputStream bais = null;
+            bais = new ByteArrayInputStream(this.buffer);
+            bsis = new BufferedServletInputStream(bais);
+            return bsis;
         }
 
         String getRequestBody() throws IOException {
@@ -197,20 +167,18 @@ public class LoggingFilter implements Filter {
 
 		@Override
 		public boolean isFinished() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public boolean isReady() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public void setReadListener(ReadListener listener) {
-			// TODO Auto-generated method stub
-			
+						        // No specific actions required for destruction
+
 		}
 
     }
@@ -240,14 +208,13 @@ public class LoggingFilter implements Filter {
 
 		@Override
 		public boolean isReady() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
 		@Override
 		public void setWriteListener(WriteListener listener) {
-			// TODO Auto-generated method stub
-			
+			        // No specific actions required for destruction
+
 		}
     }
 
@@ -268,17 +235,6 @@ public class LoggingFilter implements Filter {
         public PrintWriter getWriter() throws IOException {
             return original.getWriter();
         }
-        public String getToken() throws ParseException {
-        	
-        	String response1=getContent();
-        	   JSONParser parser = new JSONParser();
-               JSONObject json = (JSONObject) parser.parse(response1);
-               Long token = Long.valueOf((String)json.get("token"));
-               logger.info(token.toString());
-               
-        	return token.toString();
-        	//return token.toString();
-        	}
           
         
 
@@ -467,8 +423,8 @@ public class LoggingFilter implements Filter {
 
 		@Override
 		public void setContentLengthLong(long length) {
-			// TODO Auto-generated method stub
-			
+			        // No specific actions required for destruction
+
 		}
 
     }
