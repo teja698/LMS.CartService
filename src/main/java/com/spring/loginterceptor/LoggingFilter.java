@@ -70,7 +70,6 @@ public class LoggingFilter implements Filter {
             logger.error(a.getMessage());
         }
     }
-
     private Map<String, String> getTypesafeRequestMap(HttpServletRequest request) {
         Map<String, String> typesafeRequestMap = new HashMap<>();
         Enumeration<?> requestParamNames = request.getParameterNames();
