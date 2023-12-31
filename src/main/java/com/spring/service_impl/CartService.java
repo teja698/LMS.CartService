@@ -1,6 +1,4 @@
 package com.spring.service_impl;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,9 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.spring.BaseDao.IGenericDao;
+import com.spring.config.RecordNotFoundException;
 import com.spring.dto.AddItem;
 import com.spring.dto.LmsResponse;
 import com.spring.exception.CartItemNotExistException;
@@ -18,16 +20,17 @@ import com.spring.iservice.ICartService;
 import com.spring.model.Cart;
 import com.spring.repository.ICartRepository;
 import com.spring.service.BaseServiceImpl;
+
 @Service
 public class CartService extends BaseServiceImpl implements ICartService {
 	@Autowired
-	private ICartRepository repository;;
-
+	private ICartRepository repository;
+        private IGenericDao<Cart> cart1 ;
+        	static Logger logger = Logger.getLogger(CartService.class);
 
 	@Override
 	@Transactional
 	public Cart addToCart(AddItem addCart,int userId){
-	
 		Cart cart=new Cart();
     try {
         cart.setProductId(addCart.getProductId());
@@ -35,7 +38,7 @@ public class CartService extends BaseServiceImpl implements ICartService {
         cart.setPrice(addCart.getPrice());
         cart.setCreatedDate(new Date());
         cart.setIsActive(true);
-        genericDao.create(cart);
+        cart1.create(cart);
     } catch (Exception e) {
         throw e;
     }
@@ -50,9 +53,10 @@ public class CartService extends BaseServiceImpl implements ICartService {
            List<Cart> cartList = repository.getAllList(userId);
             for (Cart cart : cartList) {
                 Map<String, Object> cartDtoList = new HashMap<>();
-                ResponseEntity<LmsResponse> response = getCourseById(cart.getProductId());
-                if (response.getBody() != null) {
-                    Map<String, Object> list = response.getBody().getResponse();
+                LmsResponse response = getCourseById(cart.getProductId()).getBody();
+                if (response!= null ) {
+                 Map<String, Object> list = response.getResponse();
+
                     String[] keys = {"courseName", "userName", "courseCategory", "rating", "courseLevel", "totalDuration", "totalChapters", "image"};
                     for (String key : keys) {
                         cartDtoList.put(key, list.get(key));
@@ -62,10 +66,14 @@ public class CartService extends BaseServiceImpl implements ICartService {
                     cartDtoList.put("userId", cart.getUserId());
                     cartDtoList.put("id", cart.getId());
                     mapList.add(cartDtoList);
+                }else{
+                    throw new RecordNotFoundException("Record not found for course id : " + cart.getProductId() + " and user id : " + userId);
+
                 }
-			}
+                
+            }
         } catch (Exception e) {
-            // Handle exception
+            throw e;
         }
 		  
 		return mapList;
@@ -74,11 +82,9 @@ public class CartService extends BaseServiceImpl implements ICartService {
 	@Override
 	@Transactional
 	public void removeItemFromCart(int cartId) {
-		// TODO Auto-generated method stub
 		try {
 			 if (!repository.existsById(cartId))
 		            throw new CartItemNotExistException("Cart id is invalid : " + cartId);
-		      //  cartRepository.deleteById(id);
 			repository.removeItemFromCart(cartId);
 		}
 		catch (Exception e) {

@@ -1,8 +1,6 @@
  package com.spring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -18,9 +16,6 @@ public class Cart implements Serializable {
 
     @Column(name = "createdDate")
     private Date createdDate;
-
-  //  @ManyToOne
-    //@JoinColumn(name = "product_id", referencedColumnName = "id")
     @Column
     private int productId;
 

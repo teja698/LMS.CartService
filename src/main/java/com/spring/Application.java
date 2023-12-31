@@ -6,15 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.PropertySource;
-//@EnableHystrix
-//@EnableCircuitBreaker
-//@EnableHystrixDashboard
 @SpringBootApplication
 @EnableEurekaClient
 @EnableAutoConfiguration(exclude = { HibernateJpaAutoConfiguration.class }) 
-//@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
-//s@SpringBootApplication
-//(exclude = {DataSourceAutoConfiguration.class })
 @PropertySource("classpath:application.yml")
 public class Application {
 
