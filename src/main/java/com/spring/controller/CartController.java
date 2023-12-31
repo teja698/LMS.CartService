@@ -26,7 +26,7 @@ import com.spring.model.Cart;
 public class CartController extends BaseController {
 	@Autowired
 	private ICartService cartService;
-
+private String exception="service failed due to some exceptions";
 	static Logger logger = Logger.getLogger(CartController.class);
 
 	@RequestMapping(value = "/addToCart", method = RequestMethod.POST, headers = "content-type=application/json")
@@ -44,7 +44,7 @@ public class CartController extends BaseController {
         catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse(false, "service failed due to some exceptions", 500));
+                    .body(new ApiResponse(false, exception, 500));
         }
         return new ResponseEntity<>(
 				response, HttpStatus.CREATED);
@@ -80,7 +80,7 @@ public class CartController extends BaseController {
 		catch (Exception e) {
 			String stackTrace = ExceptionUtils.getStackTrace(e);
 			logger.error(stackTrace);
-			return new ResponseEntity<>(new ApiResponse(false, "service failed due to some exceptions", 500),
+			return new ResponseEntity<>(new ApiResponse(false, exception, 500),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(new ApiResponse(true, "Item has been removed", 200), HttpStatus.OK);
@@ -97,7 +97,7 @@ public class CartController extends BaseController {
 		catch (Exception e) {
 			String stackTrace = ExceptionUtils.getStackTrace(e);
 			logger.error(stackTrace);
-			return new ResponseEntity<>(new ApiResponse(false, "service failed due to some exceptions", 500),
+			return new ResponseEntity<>(new ApiResponse(false, exception, 500),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(new ApiResponse(true, "Items has been removed", 200), HttpStatus.OK);
