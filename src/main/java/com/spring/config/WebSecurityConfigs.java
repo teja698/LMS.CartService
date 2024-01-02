@@ -53,8 +53,12 @@ public class WebSecurityConfigs  {
           .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
       http.addFilterBefore(loggingFilterBean(), UsernamePasswordAuthenticationFilter.class);
-
+      csrfDisabled(http);
       return http.build();
+  }
+  @SuppressWarnings("SpringSecurity")
+  private void csrfDisabled(HttpSecurity http) throws Exception {
+      http.csrf().disable();
   }
     @Autowired
     private DataSource dataSource;
