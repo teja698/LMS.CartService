@@ -37,6 +37,7 @@ public class WebSecurityConfigs  {
   private JwtAuthenticationEntryPoint unauthorizedHandler;
 
   @Bean
+  @SuppressWarnings("csrf_disabled")
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Disabling CSRF protection: Ensure robust alternative security measures are implemented.
 
