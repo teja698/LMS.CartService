@@ -38,6 +38,8 @@ public class WebSecurityConfigs  {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Disabling CSRF protection: Ensure robust alternative security measures are implemented.
+
       http
           .cors().and()
           .csrf().disable()
